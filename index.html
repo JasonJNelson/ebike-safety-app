@@ -1,1 +1,576 @@
-SEE_FILE
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Bike Rider Safety App | Free & Pro</title>
+  <style>
+    :root {
+      --primary: #0d9488;
+      --primary-dark: #0f766e;
+      --accent: #f59e0b;
+      --pro: #7c3aed;
+      --pro-dark: #5b21b6;
+      --card: #ffffff;
+      --text: #134e4a;
+      --success: #059669;
+      --shadow: 0 4px 20px rgba(13, 148, 136, 0.12);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(160deg, #ecfdf5 0%, #f0fdfa 40%, #e0f2fe 100%);
+      color: var(--text);
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, #0f766e 100%);
+      color: white;
+      padding: 1.25rem 1rem 1.75rem;
+      text-align: center;
+      box-shadow: 0 4px 24px rgba(13, 148, 136, 0.3);
+      position: relative;
+    }
+    header.pro-active {
+      background: linear-gradient(135deg, var(--pro) 0%, var(--pro-dark) 100%);
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 960px;
+      margin: 0 auto 0.75rem;
+      gap: 0.75rem;
+    }
+    .tier-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(255,255,255,0.2);
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+    .btn-header-pro {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(255,255,255,0.95);
+      color: var(--pro-dark);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    }
+    .btn-header-pro:hover { transform: translateY(-1px); }
+    body.is-pro .btn-header-pro { display: none; }
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.35rem;
+    }
+    header p { opacity: 0.9; font-size: 0.95rem; max-width: 560px; margin: 0 auto; }
+    .container { max-width: 960px; margin: 0 auto; padding: 1.25rem; }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(13, 148, 136, 0.08);
+    }
+    .card h2 {
+      font-size: 1.25rem;
+      color: var(--primary-dark);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    select {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      font-size: 1.05rem;
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      background: white;
+      color: var(--text);
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%230d9488' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+    }
+    select:focus {
+      outline: none;
+      border-color: var(--primary-dark);
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.25);
+    }
+    .state-info { display: none; animation: fadeIn 0.35s ease; }
+    .state-info.visible { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.35rem 0.75rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600;
+    }
+    .badge.yes { background: #d1fae5; color: #065f46; }
+    .badge.no { background: #fee2e2; color: #991b1b; }
+    .badge.warn { background: #fef3c7; color: #92400e; }
+    .badge.neutral { background: #e0f2fe; color: #075985; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 640px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      header h1 { font-size: 1.4rem; }
+    }
+    .info-item {
+      background: #f0fdfa; border-radius: 12px; padding: 0.9rem 1rem;
+      border-left: 4px solid var(--primary);
+    }
+    .info-item strong {
+      display: block; font-size: 0.8rem; text-transform: uppercase;
+      letter-spacing: 0.04em; color: var(--primary-dark); margin-bottom: 0.25rem;
+    }
+    .info-item span { font-size: 1rem; }
+    .classes-explain {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin: 1.25rem 0;
+    }
+    @media (max-width: 700px) { .classes-explain { grid-template-columns: 1fr; } }
+    .class-card {
+      background: linear-gradient(145deg, #f0fdfa, #ecfdf5);
+      border-radius: 12px; padding: 1rem; text-align: center;
+      border: 1px solid rgba(13, 148, 136, 0.15);
+    }
+    .class-card h3 { font-size: 1rem; color: var(--primary-dark); margin-bottom: 0.35rem; }
+    .class-card p { font-size: 0.85rem; color: #334155; }
+    .class-card .speed { font-weight: 700; color: var(--accent); font-size: 0.95rem; }
+    .rules-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+    .rules-list li {
+      display: flex; gap: 0.75rem; align-items: flex-start;
+      background: #f8fafc; padding: 0.85rem 1rem; border-radius: 10px;
+    }
+    .gear-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem;
+    }
+    .gear-card {
+      background: #f8fafc; border-radius: 14px; padding: 1.25rem;
+      border: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .gear-card:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      border-color: var(--primary);
+    }
+    .gear-card .gear-icon {
+      width: 64px; height: 64px; background: white; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .gear-card h3 { font-size: 1.05rem; color: var(--text); }
+    .gear-card p { font-size: 0.88rem; color: #475569; flex-grow: 1; }
+    .btn-amazon {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      background: #ff9900; color: #111; font-weight: 700; font-size: 0.9rem;
+      padding: 0.6rem 1rem; border-radius: 8px; text-decoration: none;
+    }
+    .btn-amazon:hover { background: #e88b00; }
+    .btn-pro {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      background: linear-gradient(135deg, var(--pro), var(--pro-dark));
+      color: white; font-weight: 700; font-size: 0.95rem;
+      padding: 0.75rem 1.4rem; border-radius: 10px; border: none; cursor: pointer;
+      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+    }
+    .btn-secondary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      background: white; color: var(--pro-dark); font-weight: 600; font-size: 0.9rem;
+      padding: 0.65rem 1.2rem; border-radius: 10px; border: 2px solid var(--pro); cursor: pointer;
+    }
+    .disclaimer {
+      background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px;
+      padding: 1rem 1.25rem; font-size: 0.85rem; color: #78350f; margin-top: 1rem;
+    }
+    .disclaimer strong { display: block; margin-bottom: 0.35rem; }
+    .note {
+      font-size: 0.85rem; color: #64748b; margin-top: 1rem; padding: 0.75rem;
+      background: #f1f5f9; border-radius: 8px;
+    }
+    footer { text-align: center; padding: 2rem 1rem; font-size: 0.8rem; color: #64748b; }
+    .section-icon { width: 28px; height: 28px; }
+    .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 0.5rem; }
+    @media (max-width: 640px) { .pricing-grid { grid-template-columns: 1fr; } }
+    .price-card {
+      border-radius: 16px; padding: 1.5rem; border: 2px solid #e2e8f0; background: #f8fafc;
+    }
+    .price-card.featured {
+      border-color: var(--pro);
+      background: linear-gradient(160deg, #f5f3ff 0%, #ede9fe 100%);
+    }
+    .price-card h3 { font-size: 1.2rem; margin-bottom: 0.25rem; }
+    .price-card .price {
+      font-size: 2rem; font-weight: 800; color: var(--primary-dark); margin: 0.5rem 0;
+    }
+    .price-card.featured .price { color: var(--pro-dark); }
+    .price-card ul { list-style: none; margin: 1rem 0 1.25rem; font-size: 0.9rem; }
+    .price-card ul li {
+      padding: 0.35rem 0; display: flex; gap: 0.5rem; align-items: flex-start;
+    }
+    .price-card ul li::before { content: "\2713"; color: var(--success); font-weight: 700; flex-shrink: 0; }
+    .price-card.featured ul li::before { color: var(--pro); }
+    .locked-notes { position: relative; margin-top: 1rem; border-radius: 12px; overflow: hidden; }
+    .locked-notes .blur-content { filter: blur(5px); user-select: none; pointer-events: none; opacity: 0.6; }
+    .locked-notes .unlock-cta {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; background: rgba(255,255,255,0.75);
+      gap: 0.75rem; padding: 1rem; text-align: center;
+    }
+    .unlock-cta p { font-weight: 600; color: var(--pro-dark); font-size: 0.95rem; }
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55);
+      z-index: 100; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: white; border-radius: 16px; padding: 1.75rem; max-width: 440px; width: 100%;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto;
+    }
+    .modal h3 { margin-bottom: 0.5rem; color: var(--pro-dark); }
+    .modal p { font-size: 0.9rem; color: #475569; margin-bottom: 1rem; }
+    .modal input {
+      width: 100%; padding: 0.75rem 1rem; border: 2px solid #e2e8f0;
+      border-radius: 10px; font-size: 1rem; margin-bottom: 1rem;
+    }
+    .modal input:focus { outline: none; border-color: var(--pro); }
+    .modal-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .pro-only { display: none; }
+    body.is-pro .pro-only { display: block; }
+    body.is-pro .free-only { display: none; }
+    .checklist { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .checklist li {
+      display: flex; align-items: center; gap: 0.6rem;
+      background: #f8fafc; padding: 0.7rem 1rem; border-radius: 10px; font-size: 0.95rem;
+    }
+    .checklist input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--pro); }
+    .btn-pro {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      background: linear-gradient(135deg, var(--pro), var(--pro-dark));
+      color: white; font-weight: 700; font-size: 0.95rem;
+      padding: 0.75rem 1.4rem; border-radius: 10px; border: none; cursor: pointer;
+    }
+    .btn-secondary {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: white; color: var(--pro-dark); font-weight: 600; font-size: 0.9rem;
+      padding: 0.65rem 1.2rem; border-radius: 10px; border: 2px solid var(--pro); cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header id="appHeader">
+    <div class="header-top">
+      <div class="tier-badge" id="tierBadge">FREE</div>
+      <button class="btn-header-pro free-only" onclick="openUpgradeModal()">Upgrade to Pro — $4.99</button>
+    </div>
+    <h1>E-Bike Rider Safety App</h1>
+    <p>State regulations, park & street rules, and recommended safety equipment.</p>
+  </header>
+
+  <div class="container">
+    <section class="card pro-only" style="border-color: var(--pro); background: linear-gradient(160deg, #f5f3ff, #fff);">
+      <h2 style="color: var(--pro-dark);">Pro Unlocked</h2>
+      <p style="color:#475569;margin-bottom:0.75rem">Full detailed state notes and pre-ride checklist are unlocked. Thank you for supporting the app.</p>
+      <button class="btn-secondary" onclick="resetToFree()" style="font-size:0.85rem;">Reset to Free (demo)</button>
+    </section>
+
+    <section class="card">
+      <h2>Select Your State</h2>
+      <select id="stateSelect" aria-label="Select U.S. state or DC">
+        <option value="">— Choose a state —</option>
+      </select>
+      <div id="stateInfo" class="state-info" style="margin-top:1.25rem;"></div>
+      <p class="note">Laws change frequently and local rules can be stricter than state law. Always verify with your state DOT/DMV. Data current as of mid-2026.</p>
+    </section>
+
+    <section class="card">
+      <h2>E-Bike Classes Explained</h2>
+      <div class="classes-explain">
+        <div class="class-card">
+          <h3>Class 1</h3>
+          <p class="speed">Assist up to 20 mph</p>
+          <p>Pedal-assist only. Widest trail & path access.</p>
+        </div>
+        <div class="class-card">
+          <h3>Class 2</h3>
+          <p class="speed">Assist up to 20 mph</p>
+          <p>Throttle + pedal-assist. Some path restrictions.</p>
+        </div>
+        <div class="class-card">
+          <h3>Class 3</h3>
+          <p class="speed">Assist up to 28 mph</p>
+          <p>Pedal-assist only (higher speed). Often road/bike-lane only.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Park & Street Rules (General)</h2>
+      <ul class="rules-list">
+        <li><div><strong>Public Streets & Bike Lanes</strong><br>Most states treat Class 1–3 like bicycles. Follow traffic laws.</div></li>
+        <li><div><strong>Sidewalks</strong><br>Generally prohibited unless local law allows.</div></li>
+        <li><div><strong>Multi-Use Paths & Trails</strong><br>Class 1 broadest access; Class 2/3 more restricted.</div></li>
+        <li><div><strong>National Parks (NPS)</strong><br>Allowed where traditional bikes are permitted.</div></li>
+        <li><div><strong>Federal Lands</strong><br>BLM generally allows Class 1–3; Forest Service often treats as motorized.</div></li>
+        <li><div><strong>Local Override</strong><br>Cities can be stricter (e.g. NYC 15 mph cap).</div></li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Recommended Safety Equipment</h2>
+      <p style="margin-bottom:1.25rem;color:#475569;font-size:0.95rem;">Higher speeds on e-bikes increase injury severity. Prioritize certified gear. Open to all riders.</p>
+      <div class="gear-grid">
+        <div class="gear-card">
+          <div class="gear-icon">
+            <svg width="48" height="48" viewBox="0 0 64 64" fill="none"><path d="M12 36c0-12 9-22 20-22s20 10 20 22v4H12v-4z" fill="#0d9488" opacity="0.2"/><path d="M12 36c0-12 9-22 20-22s20 10 20 22" stroke="#0d9488" stroke-width="3" fill="none"/><path d="M10 40h44c1 0 2 1 2 2v2c0 2-2 4-4 4H12c-2 0-4-2-4-4v-2c0-1 1-2 2-2z" fill="#0d9488"/><path d="M22 28c2-4 6-6 10-6" stroke="#f59e0b" stroke-width="2"/><circle cx="48" cy="22" r="3" fill="#f59e0b"/></svg>
+          </div>
+          <h3>Certified Helmet (MIPS preferred)</h3>
+          <p>CPSC-certified helmet with rotational protection. Essential at e-bike speeds. Replace after any impact.</p>
+          <a class="btn-amazon" href="https://www.amazon.com/s?k=mips+bike+helmet+ebike" target="_blank" rel="noopener noreferrer sponsored">Shop on Amazon →</a>
+        </div>
+        <div class="gear-card">
+          <div class="gear-icon">
+            <svg width="48" height="48" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="28" r="12" fill="#fef3c7" stroke="#f59e0b" stroke-width="2.5"/><path d="M32 10v4M32 42v4M14 28h4M46 28h4M18 14l3 3M43 43l3 3M18 42l3-3M43 13l3 3" stroke="#f59e0b" stroke-width="2"/><rect x="28" y="40" width="8" height="14" rx="2" fill="#0d9488"/></svg>
+          </div>
+          <h3>Front + Rear Lights</h3>
+          <p>White front (400–1200 lm) + red rear with flash modes. Required at night in all 50 states.</p>
+          <a class="btn-amazon" href="https://www.amazon.com/s?k=bike+light+set+front+rear+rechargeable" target="_blank" rel="noopener noreferrer sponsored">Shop on Amazon →</a>
+        </div>
+        <div class="gear-card">
+          <div class="gear-icon">
+            <svg width="48" height="48" viewBox="0 0 64 64" fill="none"><ellipse cx="36" cy="28" rx="16" ry="12" fill="#e0f2fe" stroke="#0d9488" stroke-width="2.5"/><path d="M20 28h-8M12 22v12" stroke="#0d9488" stroke-width="2.5"/><circle cx="40" cy="26" r="3" fill="#0d9488" opacity="0.4"/></svg>
+          </div>
+          <h3>Rear-View Mirror</h3>
+          <p>Handlebar or helmet-mounted. Critical for lane changes without turning your head.</p>
+          <a class="btn-amazon" href="https://www.amazon.com/s?k=bicycle+rear+view+mirror+handlebar" target="_blank" rel="noopener noreferrer sponsored">Shop on Amazon →</a>
+        </div>
+        <div class="gear-card">
+          <div class="gear-icon">
+            <svg width="48" height="48" viewBox="0 0 64 64" fill="none"><path d="M20 16h24l6 12v20H14V28l6-12z" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/><path d="M24 28h16M24 36h16" stroke="#f59e0b" stroke-width="2"/><circle cx="32" cy="20" r="3" fill="#f59e0b"/></svg>
+          </div>
+          <h3>High-Vis / Reflective Gear</h3>
+          <p>Reflective vest or clothing. Dramatically improves daytime and low-light visibility.</p>
+          <a class="btn-amazon" href="https://www.amazon.com/s?k=reflective+cycling+vest+high+visibility" target="_blank" rel="noopener noreferrer sponsored">Shop on Amazon →</a>
+        </div>
+        <div class="gear-card">
+          <div class="gear-icon">
+            <svg width="48" height="48" viewBox="0 0 64 64" fill="none"><path d="M22 18c0-4 3-8 8-8s8 4 8 8v8h4c2 0 4 2 4 4v16c0 3-2 6-6 6H22c-4 0-6-3-6-6V30c0-2 2-4 4-4h2V18z" fill="#ccfbf1" stroke="#0d9488" stroke-width="2"/><path d="M30 18v14M38 26v6" stroke="#0d9488" stroke-width="1.5"/></svg>
+          </div>
+          <h3>Padded Cycling Gloves</h3>
+          <p>Improve grip, reduce vibration, protect hands in a fall. Full-finger preferred at higher speeds.</p>
+          <a class="btn-amazon" href="https://www.amazon.com/s?k=padded+cycling+gloves" target="_blank" rel="noopener noreferrer sponsored">Shop on Amazon →</a>
+        </div>
+        <div class="gear-card">
+          <div class="gear-icon">
+            <svg width="48" height="48" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="14" fill="#fef3c7" stroke="#f59e0b" stroke-width="2.5"/><path d="M32 22v6M26 28h12" stroke="#f59e0b" stroke-width="2"/><path d="M20 40c4 6 20 6 24 0" stroke="#0d9488" stroke-width="2" fill="none"/><circle cx="32" cy="32" r="3" fill="#0d9488"/></svg>
+          </div>
+          <h3>Bell or Horn</h3>
+          <p>Alert pedestrians and other cyclists. Many jurisdictions require an audible warning device.</p>
+          <a class="btn-amazon" href="https://www.amazon.com/s?k=bicycle+bell+loud" target="_blank" rel="noopener noreferrer sponsored">Shop on Amazon →</a>
+        </div>
+      </div>
+      <div class="disclaimer">
+        <strong>Amazon Affiliate Disclosure (FTC Compliance)</strong>
+        As an Amazon Associate I earn from qualifying purchases. This means that if you click on an Amazon link on this page and make a purchase, I may receive a small commission at no extra cost to you. This disclosure is provided in accordance with the Federal Trade Commission’s guidelines on endorsements and the Amazon Associates Program Operating Agreement.
+      </div>
+    </section>
+
+    <section class="card pro-only">
+      <h2>Pre-Ride Safety Checklist</h2>
+      <ul class="checklist">
+        <li><input type="checkbox" id="c1"> <label for="c1">Helmet on and snug</label></li>
+        <li><input type="checkbox" id="c2"> <label for="c2">Front & rear lights working</label></li>
+        <li><input type="checkbox" id="c3"> <label for="c3">Tires inflated to recommended PSI</label></li>
+        <li><input type="checkbox" id="c4"> <label for="c4">Brakes tested (front and rear)</label></li>
+        <li><input type="checkbox" id="c5"> <label for="c5">Battery charged and secured</label></li>
+        <li><input type="checkbox" id="c6"> <label for="c6">Mirror positioned (if equipped)</label></li>
+        <li><input type="checkbox" id="c7"> <label for="c7">Know local path / class restrictions</label></li>
+        <li><input type="checkbox" id="c8"> <label for="c8">Phone charged + emergency contact set</label></li>
+      </ul>
+    </section>
+  </div>
+
+  <footer>
+    <p>E-Bike Rider Safety App · Educational use only · Not legal advice</p>
+  </footer>
+
+  <div class="modal-backdrop" id="upgradeModal">
+    <div class="modal">
+      <h3>Free vs Pro</h3>
+      <div class="pricing-grid" style="margin-bottom:1rem;">
+        <div class="price-card">
+          <h3>Free</h3>
+          <div class="price">$0</div>
+          <ul>
+            <li>All 50 states + DC</li>
+            <li>Class, path, helmet, age</li>
+            <li>Class explainers</li>
+            <li>Park & street rules</li>
+            <li>All safety equipment</li>
+          </ul>
+        </div>
+        <div class="price-card featured">
+          <h3>Pro</h3>
+          <div class="price">$4.99</div>
+          <ul>
+            <li>Everything in Free</li>
+            <li>Full detailed state notes</li>
+            <li>Pre-ride checklist</li>
+            <li>No upgrade prompts</li>
+          </ul>
+        </div>
+      </div>
+      <p>Enter unlock code (demo: <strong>PRO2026</strong>):</p>
+      <input type="text" id="unlockCode" placeholder="Enter code…" autocomplete="off">
+      <div class="modal-actions">
+        <button class="btn-pro" onclick="tryUnlock()">Unlock Pro</button>
+        <button class="btn-secondary" onclick="closeUpgradeModal()">Cancel</button>
+      </div>
+      <p style="margin-top:1rem;font-size:0.8rem;color:#94a3b8;">For production: replace with Stripe / Gumroad / Lemon Squeezy.</p>
+    </div>
+  </div>
+
+  <script>
+    const PRO_KEY = 'ebike_pro_unlocked';
+    const VALID_CODE = 'PRO2026';
+    const stateData = {
+      "Alabama": { system: "3-tier", class3: true, paths: "Yes", helmet: "All ages (Class 3)", age: "16 (Class 3)", license: "No", reg: "No", notes: "Class 3 allowed on paths. Helmet required for Class 3 all ages." },
+      "Alaska": { system: "Custom", class3: true, paths: "No", helmet: "Not required", age: "None", license: "No", reg: "No", notes: "No statewide 3-class system. Local rules dominate." },
+      "Arizona": { system: "3-tier", class3: true, paths: "No (local option)", helmet: "Not required", age: "None", license: "No", reg: "No", notes: "All three classes generally treated as bicycles." },
+      "Arkansas": { system: "3-tier", class3: true, paths: "No", helmet: "Under 21 (Class 3)", age: "16 (Class 3)", license: "No", reg: "No", notes: "Class 3 restricted from many bike paths." },
+      "California": { system: "3-tier", class3: true, paths: "Yes (with limits)", helmet: "All ages (Class 3) + under 18 any class", age: "16 (Class 3)", license: "No", reg: "No", notes: "UL 2849 battery certification required. Strong local variation (e.g., SF)." },
+      "Colorado": { system: "3-tier", class3: true, paths: "No (Class 3)", helmet: "Under 18 (Class 3)", age: "16 (Class 3)", license: "No", reg: "No", notes: "Class 1 & 2 on paths unless prohibited; Class 3 primarily roads/bike lanes." },
+      "Connecticut": { system: "3-tier", class3: true, paths: "No", helmet: "All ages (all classes)", age: "16 (Class 3)", license: "No", reg: "No", notes: "Helmets for every rider, every age, every class." },
+      "Delaware": { system: "3-tier", class3: true, paths: "Yes", helmet: "All ages (Class 3)", age: "16 (Class 3)", license: "No", reg: "No", notes: "Class 3 allowed on paths in many cases." },
+      "District of Columbia": { system: "Custom", class3: false, paths: "No", helmet: "Under 16", age: "16", license: "No", reg: "No", notes: "No Class 3 category." },
+      "Florida": { system: "3-tier", class3: true, paths: "Yes", helmet: "Under 16", age: "None statewide", license: "No", reg: "No", notes: "Relatively permissive. Local ordinances still apply." },
+      "Georgia": { system: "3-tier", class3: true, paths: "No", helmet: "All ages (Class 3)", age: "15 (Class 3)", license: "No", reg: "No", notes: "Class 3 restricted from many paths." },
+      "Hawaii": { system: "3-tier", class3: true, paths: "No", helmet: "Under 18", age: "16 (Class 3)", license: "No", reg: "Yes ($30 one-time)", notes: "Registration required. Act 259 (2026) formalized classes." },
+      "Idaho": { system: "3-tier", class3: true, paths: "Yes", helmet: "Not required", age: "15 (Class 3)", license: "No", reg: "No", notes: "Relatively open path access." },
+      "Illinois": { system: "3-tier", class3: true, paths: "No", helmet: "Not required", age: "16 (Class 3)", license: "No", reg: "No", notes: "Class 3 primarily for roads." },
+      "Indiana": { system: "3-tier", class3: true, paths: "No", helmet: "Under 18 (Class 3)", age: "15 (Class 3)", license: "No", reg: "No", notes: "Class 3 path access limited." },
+      "Iowa": { system: "3-tier", class3: true, paths: "Yes", helmet: "Not required", age: "16 (Class 3)", license: "No", reg: "No", notes: "Good path access for Class 3." },
+      "Kansas": { system: "3-tier", class3: true, paths: "No", helmet: "All ages (Class 3)", age: "16 (Class 3)", license: "No", reg: "No", notes: "Helmet required for Class 3 all ages." },
+      "Kentucky": { system: "Custom", class3: false, paths: "No", helmet: "Not required", age: "None", license: "No", reg: "No", notes: "No statewide 3-class system." },
+      "Louisiana": { system: "3-tier", class3: true, paths: "Yes", helmet: "All ages (Class 3)", age: "12 (Class 3)", license: "No", reg: "No", notes: "Lowest Class 3 minimum age among states that set one." },
+      "Maine": { system: "3-tier", class3: true, paths: "No", helmet: "Under 16", age: "16 (Class 3)", license: "No", reg: "No", notes: "Class 3 restricted from many paths." },
+      "Maryland": { system: "3-tier", class3: true, paths: "No", helmet: "Under 16", age: "16 (Class 3)", license: "No", reg: "No", notes: "Class 3 on highways has age restriction." },
+      "Massachusetts": { system: "Custom", class3: false, paths: "No", helmet: "Under 16", age: "16", license: "No", reg: "No", notes: "Recognizes Class 1 & 2; no Class 3 category currently." },
+      "Michigan": { system: "3-tier", class3: true, paths: "No", helmet: "Under 18 (Class 3)", age: "14 (Class 3)", license: "No", reg: "No", notes: "Lower Class 3 age threshold than many states." },
+      "Minnesota": { system: "3-tier", class3: true, paths: "Yes", helmet: "Not required", age: "15 (Class 3)", license: "No", reg: "No", notes: "Class 3 allowed on many paths." },
+      "Mississippi": { system: "3-tier", class3: true, paths: "Yes", helmet: "Not required", age: "16 (Class 3)", license: "No", reg: "No", notes: "Relatively open." },
+      "Missouri": { system: "3-tier", class3: true, paths: "Yes", helmet: "Not required", age: "16 (Class 3)", license: "No", reg: "No", notes: "Path access available for Class 3." },
+      "Montana": { system: "Custom", class3: false, paths: "No", helmet: "Not required", age: "None", license: "No", reg: "No", notes: "No statewide 3-class framework." },
+      "Nebraska": { system: "3-tier", class3: true, paths: "Yes", helmet: "Not required", age: "None", license: "No", reg: "No", notes: "Permissive statewide rules." },
+      "Nevada": { system: "3-tier", class3: true, paths: "Yes", helmet: "Not required", age: "None", license: "No", reg: "No", notes: "Permissive. Local rules still matter in urban areas." },
+      "New Hampshire": { system: "3-tier", class3: true, paths: "No", helmet: "Under 18 (Class 3)", age: "16 (Class 3)", license: "No", reg: "No", notes: "Class 3 path restrictions common." },
+      "New Jersey": { system: "Custom (2026)", class3: true, paths: "No", helmet: "All ages", age: "15", license: "Yes", reg: "Yes", notes: "Registration with MVC + license required as of July 2026." },
+      "New Mexico": { system: "3-tier", class3: true, paths: "No", helmet: "Under 18 (Class 3)", age: "16 (Class 3)", license: "No", reg: "No", notes: "Class 3 path access limited." },
+      "New York": { system: "3-tier", class3: true, paths: "Limited", helmet: "Class 3 + some ages", age: "16 (Class 3)", license: "No", reg: "No", notes: "Class 3 capped at 25 mph. NYC caps all e-bikes at 15 mph on city streets." },
+      "North Carolina": { system: "Custom", class3: false, paths: "Varies", helmet: "Varies", age: "Varies", license: "No", reg: "No", notes: "Historically no Class 3; check current statute." },
+      "North Dakota": { system: "3-tier", class3: true, paths: "Varies", helmet: "Varies", age: "Varies", license: "No", reg: "No", notes: "Confirm with state DOT." },
+      "Ohio": { system: "3-tier", class3: true, paths: "Varies", helmet: "Varies", age: "Varies", license: "No", reg: "No", notes: "3-class system; path access often local." },
+      "Oklahoma": { system: "3-tier", class3: true, paths: "Varies", helmet: "Varies", age: "Varies", license: "No", reg: "No", notes: "Confirm local path and park rules." },
+      "Oregon": { system: "3-tier", class3: true, paths: "Limited (Class 3)", helmet: "Varies", age: "16 (Class 2/3)", license: "No", reg: "No", notes: "Allows up to 1,000 W in some cases." },
+      "Pennsylvania": { system: "Custom", class3: false, paths: "No", helmet: "Varies", age: "16", license: "Possible", reg: "Possible", notes: "No standard Class 3." },
+      "Rhode Island": { system: "3-tier", class3: true, paths: "Varies", helmet: "Under 21 on e-bikes", age: "Varies", license: "No", reg: "No", notes: "Helmet age higher for e-bikes than regular bikes." },
+      "South Carolina": { system: "Custom", class3: false, paths: "No", helmet: "Not required", age: "None", license: "No", reg: "No", notes: "No statewide 3-class system." },
+      "South Dakota": { system: "3-tier", class3: true, paths: "Varies", helmet: "Not required", age: "Varies", license: "No", reg: "No", notes: "Generally permissive." },
+      "Tennessee": { system: "3-tier", class3: true, paths: "Local authority expanded 2026", helmet: "Varies", age: "16 (Class 3)", license: "No", reg: "No", notes: "Cities gained broader authority to restrict e-bikes on greenways (2026)." },
+      "Texas": { system: "3-tier", class3: true, paths: "Limited (Class 3)", helmet: "Under 18", age: "15 (Class 3)", license: "No", reg: "No", notes: "Class 3 restricted to roads and bike lanes in many contexts." },
+      "Utah": { system: "3-tier", class3: true, paths: "Local option", helmet: "Under 21 (roads)", age: "Detailed tiers", license: "No", reg: "No", notes: "Helmet rule expanded 2026. Age tiers for younger riders." },
+      "Vermont": { system: "3-tier", class3: true, paths: "Varies", helmet: "Varies", age: "Varies", license: "No", reg: "No", notes: "Confirm path rules locally." },
+      "Virginia": { system: "3-tier", class3: true, paths: "Yes (default)", helmet: "Varies", age: "Varies", license: "No", reg: "No", notes: "Defaults to allowing e-bikes where bicycles are allowed." },
+      "Washington": { system: "3-tier", class3: true, paths: "Limited (Class 3)", helmet: "Under 16", age: "None statewide for Class 1/2", license: "No", reg: "No", notes: "Class 3 restricted from many separated paths." },
+      "West Virginia": { system: "3-tier", class3: true, paths: "Varies", helmet: "Varies", age: "Varies", license: "No", reg: "No", notes: "Confirm current class and helmet rules." },
+      "Wisconsin": { system: "3-tier", class3: true, paths: "Varies", helmet: "Not required statewide", age: "Varies", license: "No", reg: "No", notes: "Local path rules important." },
+      "Wyoming": { system: "3-tier", class3: true, paths: "Yes", helmet: "Not required", age: "None", license: "No", reg: "No", notes: "Among the most permissive statewide frameworks." }
+    };
+
+    function isPro() { return localStorage.getItem(PRO_KEY) === '1'; }
+    function applyTier() {
+      const pro = isPro();
+      document.body.classList.toggle('is-pro', pro);
+      document.getElementById('appHeader').classList.toggle('pro-active', pro);
+      document.getElementById('tierBadge').textContent = pro ? 'PRO' : 'FREE';
+      const sel = document.getElementById('stateSelect');
+      if (sel.value) sel.dispatchEvent(new Event('change'));
+    }
+    function openUpgradeModal() {
+      document.getElementById('upgradeModal').classList.add('open');
+      document.getElementById('unlockCode').value = '';
+      setTimeout(() => document.getElementById('unlockCode').focus(), 50);
+    }
+    function closeUpgradeModal() {
+      document.getElementById('upgradeModal').classList.remove('open');
+    }
+    function tryUnlock() {
+      const code = (document.getElementById('unlockCode').value || '').trim().toUpperCase();
+      if (code === VALID_CODE) {
+        localStorage.setItem(PRO_KEY, '1');
+        applyTier();
+        closeUpgradeModal();
+      } else {
+        alert('Invalid code. Demo code is PRO2026');
+      }
+    }
+    function resetToFree() {
+      localStorage.removeItem(PRO_KEY);
+      applyTier();
+    }
+
+    const select = document.getElementById('stateSelect');
+    const infoEl = document.getElementById('stateInfo');
+    Object.keys(stateData).sort().forEach(state => {
+      const opt = document.createElement('option');
+      opt.value = state;
+      opt.textContent = state;
+      select.appendChild(opt);
+    });
+
+    select.addEventListener('change', () => {
+      const state = select.value;
+      if (!state || !stateData[state]) {
+        infoEl.classList.remove('visible');
+        infoEl.innerHTML = '';
+        return;
+      }
+      const d = stateData[state];
+      const pro = isPro();
+      const class3Badge = d.class3 ? '<span class="badge yes">Class 3 Legal</span>' : '<span class="badge no">No Class 3 / Custom</span>';
+      const licenseBadge = d.license === 'Yes' ? '<span class="badge warn">License Required</span>' : '<span class="badge yes">No License</span>';
+      const regBadge = (d.reg === 'Yes' || (d.reg && d.reg.includes('Yes'))) ? '<span class="badge warn">Registration Required</span>' : '<span class="badge yes">No Registration</span>';
+      let notesHtml = '';
+      if (pro) {
+        notesHtml = '<div class="info-item" style="margin-top:1rem;border-left-color:#f59e0b;"><strong>Notes & Local Considerations</strong><span>' + d.notes + '</span></div>';
+      } else {
+        notesHtml = '<div class="locked-notes"><div class="info-item blur-content" style="margin-top:1rem;border-left-color:#f59e0b;"><strong>Notes & Local Considerations</strong><span>' + d.notes + '</span></div><div class="unlock-cta"><p>Detailed notes fre a Pro feature</p><button class="btn-pro" onclick="openUpgradeModal()" style="font-size:0.85rem;padding:0.55rem 1.1rem;">Unlock Pro</button></div></div>';
+      }
+      infoEl.innerHTML = '<div class="badge-row"><span class="badge neutral">' + d.system + '</span>' + class3Badge + licenseBadge + regBadge + '</div><div class="grid-2"><div class="info-item"><strong>Class 3 on Bike Paths</strong><span>' + d.paths + '</span></div><div class="info-item"><strong>Helmet (Class 3 / general)</strong><span>' + d.helmet + '</span></div><div class="info-item"><strong>Minimum Age (Class 3)</strong><span>' + d.age + '</span></div><div class="info-item"><strong>License / Registration</strong><span>License: ' + d.license + ' · Reg: ' + d.reg + '</span></div></div>' + notesHtml;
+      infoEl.classList.add('visible');
+    });
+
+    document.getElementById('upgradeModal').addEventListener('click', (e) => {
+      if (e.target.id === 'upgradeModal') closeUpgradeModal();
+    });
+    applyTier();
+  </script>
+</body>
+</html>
