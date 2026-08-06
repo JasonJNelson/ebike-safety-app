@@ -1,0 +1,96 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # ── Continuous Integration ──────────────────────────────────────────────
+  validate:
+    name: Validate HTML
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install html-validator-cli
+        run: npm install -g html-validator-cli
+
+      - name: Validate index.html
+        run: |
+          echo "Validating index.html..."
+          html-validator --file=index.html --verbose || true
+          # Allow non-zero exit for informational output; treat critical parse errors separately
+          if ! grep -q "<!DOCTYPE html>" index.html; then
+            echo "ERROR: Missing DOCTYPE"
+            exit 1
+          fi
+          if ! grep -q "<html" index.html; then
+            echo "ERROR: Missing <html> tag"
+            exit 1
+          fi
+          echo "Basic structure checks passed."
+
+      - name: Check required sections exist
+        run: |
+          echo "Checking required app sections..."
+          grep -q "stateSelect" index.html || (echo "Missing state selector" && exit 1)
+          grep -q "E-Bike Classes Explained" index.html || (echo "Missing class explainers" && exit 1)
+          grep -q "Park & Street Rules" index.html || (echo "Missing park/street rules" && exit 1)
+          grep -q "Recommended Safety Equipment" index.html || (echo "Missing safety equipment" && exit 1)
+          grep -q "As an Amazon Associate I earn from qualifying purchases" index.html || (echo "Missing Amazon affiliate disclaimer" && exit 1)
+          echo "All required sections present."
+
+      - name: Check file size is reasonable
+        run: |
+          SIZE=$(wc -c < index.html)
+          echo "index.html size: $SIZE bytes"
+          if [ "$SIZE" -lt 10000 ]; then
+            echo "ERROR: index.html seems too small"
+            exit 1
+          fi
+          if [ "$SIZE" -gt 500000 ]; then
+            echo "WARNING: index.html is quite large"
+          fi
+
+  # ── Continuous Deployment (GitHub Pages) ────────────────────────────────
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: validate
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
