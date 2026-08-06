@@ -91,9 +91,6 @@
       font-size: 1.25rem;
       color: var(--primary-dark);
       margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
     }
     select {
       width: 100%;
@@ -189,10 +186,9 @@
       background: linear-gradient(135deg, var(--pro), var(--pro-dark));
       color: white; font-weight: 700; font-size: 0.95rem;
       padding: 0.75rem 1.4rem; border-radius: 10px; border: none; cursor: pointer;
-      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
     }
     .btn-secondary {
-      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      display: inline-flex; align-items: center; justify-content: center;
       background: white; color: var(--pro-dark); font-weight: 600; font-size: 0.9rem;
       padding: 0.65rem 1.2rem; border-radius: 10px; border: 2px solid var(--pro); cursor: pointer;
     }
@@ -206,7 +202,6 @@
       background: #f1f5f9; border-radius: 8px;
     }
     footer { text-align: center; padding: 2rem 1rem; font-size: 0.8rem; color: #64748b; }
-    .section-icon { width: 28px; height: 28px; }
     .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 0.5rem; }
     @media (max-width: 640px) { .pricing-grid { grid-template-columns: 1fr; } }
     .price-card {
@@ -261,17 +256,6 @@
       background: #f8fafc; padding: 0.7rem 1rem; border-radius: 10px; font-size: 0.95rem;
     }
     .checklist input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--pro); }
-    .btn-pro {
-      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
-      background: linear-gradient(135deg, var(--pro), var(--pro-dark));
-      color: white; font-weight: 700; font-size: 0.95rem;
-      padding: 0.75rem 1.4rem; border-radius: 10px; border: none; cursor: pointer;
-    }
-    .btn-secondary {
-      display: inline-flex; align-items: center; justify-content: center;
-      background: white; color: var(--pro-dark); font-weight: 600; font-size: 0.9rem;
-      padding: 0.65rem 1.2rem; border-radius: 10px; border: 2px solid var(--pro); cursor: pointer;
-    }
   </style>
 </head>
 <body>
@@ -561,7 +545,7 @@
       if (pro) {
         notesHtml = '<div class="info-item" style="margin-top:1rem;border-left-color:#f59e0b;"><strong>Notes & Local Considerations</strong><span>' + d.notes + '</span></div>';
       } else {
-        notesHtml = '<div class="locked-notes"><div class="info-item blur-content" style="margin-top:1rem;border-left-color:#f59e0b;"><strong>Notes & Local Considerations</strong><span>' + d.notes + '</span></div><div class="unlock-cta"><p>Detailed notes fre a Pro feature</p><button class="btn-pro" onclick="openUpgradeModal()" style="font-size:0.85rem;padding:0.55rem 1.1rem;">Unlock Pro</button></div></div>';
+        notesHtml = '<div class="locked-notes"><div class="info-item blur-content" style="margin-top:1rem;border-left-color:#f59e0b;"><strong>Notes & Local Considerations</strong><span>' + d.notes + '</span></div><div class="unlock-cta"><p>Detailed notes are a Pro feature</p><button class="btn-pro" onclick="openUpgradeModal()" style="font-size:0.85rem;padding:0.55rem 1.1rem;">Unlock Pro</button></div></div>';
       }
       infoEl.innerHTML = '<div class="badge-row"><span class="badge neutral">' + d.system + '</span>' + class3Badge + licenseBadge + regBadge + '</div><div class="grid-2"><div class="info-item"><strong>Class 3 on Bike Paths</strong><span>' + d.paths + '</span></div><div class="info-item"><strong>Helmet (Class 3 / general)</strong><span>' + d.helmet + '</span></div><div class="info-item"><strong>Minimum Age (Class 3)</strong><span>' + d.age + '</span></div><div class="info-item"><strong>License / Registration</strong><span>License: ' + d.license + ' · Reg: ' + d.reg + '</span></div></div>' + notesHtml;
       infoEl.classList.add('visible');
