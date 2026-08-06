@@ -37,7 +37,6 @@ jobs:
         run: |
           echo "Validating index.html..."
           html-validator --file=index.html --verbose || true
-          # Allow non-zero exit for informational output; treat critical parse errors separately
           if ! grep -q "<!DOCTYPE html>" index.html; then
             echo "ERROR: Missing DOCTYPE"
             exit 1
@@ -85,6 +84,9 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        with:
+          # Auto-enable GitHub Pages + set source to GitHub Actions if not already configured
+          enablement: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
