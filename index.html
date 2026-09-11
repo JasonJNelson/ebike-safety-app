@@ -38,7 +38,7 @@
     #mapInner svg .strict{fill:#fecaca}
     #mapInner svg .state-hit:hover{fill:#0d9488;filter:drop-shadow(0 0 6px rgba(13,148,136,.45))}
     #mapInner svg .state-hit.selected{fill:#7c3aed;stroke:#5b21b6;stroke-width:2;filter:drop-shadow(0 0 8px rgba(124,58,237,.4))}
-    #tooltip{display:none;position:fixed;z-index:40;width:min(340px,calc(100vw - 24px));background:#fff;border-radius:14px;box-shadow:0 18px 50px rgba(15,23,42,.22);border:1px solid #c7f0e8;padding:.9rem 1rem;pointer-events:none}
+    #tooltip{display:none;position:fixed;z-index:40;width:min(380px,calc(100vw - 24px));background:#fff;border-radius:14px;box-shadow:0 18px 50px rgba(15,23,42,.22);border:1px solid #c7f0e8;padding:.9rem 1rem;pointer-events:none}
     #tooltip.visible{display:block}
     #tooltip h3{font-size:1.05rem;margin-bottom:.35rem;color:var(--primary-dark)}
     .chips{display:flex;flex-wrap:wrap;gap:.3rem;margin:.4rem 0 .55rem}
@@ -93,7 +93,7 @@
       <button class="btn-header-pro free-only" onclick="openUpgradeModal()">Upgrade to Pro — $4.99</button>
     </div>
     <h1>U.S. E-Bike Rules Map</h1>
-    <p>Hover any state for a rules snapshot. Click to pin the full infographic. Color-coded by legal framework.</p>
+    <p>Hover any state for rules and e-bike-friendly public paths. Click to pin the full infographic.</p>
   </div>
 </header>
 <div class="container">
@@ -123,11 +123,11 @@
       <span>Hover for popup · Click to pin · Drag to pan</span>
     </div>
     <div class="map-stage" style="margin-top:.7rem"><div id="mapHost"><div id="mapInner"></div></div></div>
-    <p class="note">Laws change and cities can be stricter than the state. Verify with DOT/DMV and local land managers. Data summarized as of 2026.</p>
+    <p class="note">Trail access is usually Class 1 first. Managers can ban Class 2/3 or post speed limits. NPS generally allows e-bikes where bikes are allowed; Forest Service treats e-bikes as motorized unless designated. Always read trailhead signs.</p>
   </section>
   <section class="card" id="pinnedCard">
     <h2 id="pinnedTitle">Select a state</h2>
-    <p id="pinnedHint" style="color:#64748b">Hover the map for a quick infographic, or click a state to pin details here.</p>
+    <p id="pinnedHint" style="color:#64748b">Hover the map for a quick infographic, or click a state to pin rules and public trail suggestions.</p>
     <div id="stateInfo"></div>
   </section>
   <section class="card">
@@ -194,5 +194,6 @@
   </div>
 </div>
 <script src="app.js"></script>
+<script src="trails.js"></script>
 </body>
 </html>
