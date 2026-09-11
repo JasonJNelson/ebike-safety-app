@@ -17,7 +17,6 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # ── Continuous Integration ──────────────────────────────────────────────
   validate:
     name: Validate HTML
     runs-on: ubuntu-latest
@@ -50,26 +49,24 @@ jobs:
       - name: Check required sections exist
         run: |
           echo "Checking required app sections..."
-          grep -q "stateSelect" index.html || (echo "Missing state selector" && exit 1)
+          grep -q "Interactive United States Map" index.html || (echo "Missing interactive map" && exit 1)
           grep -q "E-Bike Classes Explained" index.html || (echo "Missing class explainers" && exit 1)
           grep -q "Park & Street Rules" index.html || (echo "Missing park/street rules" && exit 1)
           grep -q "Recommended Safety Equipment" index.html || (echo "Missing safety equipment" && exit 1)
           grep -q "As an Amazon Associate I earn from qualifying purchases" index.html || (echo "Missing Amazon affiliate disclaimer" && exit 1)
+          test -f app.js || (echo "Missing app.js" && exit 1)
+          grep -q "loadMap" app.js || (echo "Missing map loader" && exit 1)
           echo "All required sections present."
 
       - name: Check file size is reasonable
         run: |
           SIZE=$(wc -c < index.html)
           echo "index.html size: $SIZE bytes"
-          if [ "$SIZE" -lt 10000 ]; then
+          if [ "$SIZE" -lt 5000 ]; then
             echo "ERROR: index.html seems too small"
             exit 1
           fi
-          if [ "$SIZE" -gt 500000 ]; then
-            echo "WARNING: index.html is quite large"
-          fi
 
-  # ── Continuous Deployment (GitHub Pages) ────────────────────────────────
   deploy:
     name: Deploy to GitHub Pages
     needs: validate
@@ -85,7 +82,6 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
-          # Auto-enable GitHub Pages + set source to GitHub Actions if not already configured
           enablement: true
 
       - name: Upload artifact
